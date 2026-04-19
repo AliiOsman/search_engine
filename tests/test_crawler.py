@@ -239,7 +239,15 @@ class TestCrawlerRobots(unittest.TestCase):
         mock_parser.can_fetch.return_value = True
         crawler._robot_parser = mock_parser
         self.assertTrue(crawler._is_allowed("https://quotes.toscrape.com/"))
-
+    
+    def test_load_robots_txt_failure_is_handled_gracefully(self):
+        """If robots.txt fetch raises, crawling should still proceed."""
+        crawler = Crawler("https://quotes.toscrape.com/", politeness_delay=0)
+        crawler._politeness_sleep = MagicMock()
+        crawler._session = MagicMock()
+        crawler._session.get.side_effect = Exception("timeout")
+        crawler._load_robots_txt()          # should not raise
+        self.assertIsNone(crawler._robot_parser)
 
 class TestCrawlerBFS(unittest.TestCase):
     """Integration-style tests for BFS traversal and deduplication."""
@@ -293,7 +301,16 @@ class TestCrawlerBFS(unittest.TestCase):
         pages = crawler.crawl()
         self.assertIsInstance(pages[0], CrawledPage)
         self.assertEqual(pages[0].title, "Test Page")
-
+        
+    def test_iter_crawl_yields_pages(self):
+        """iter_crawl should yield CrawledPage objects one at a time."""
+        crawler = self._make_crawler()
+        crawler._session = MagicMock()
+        crawler._session.get.return_value = _make_response(200, SIMPLE_HTML)
+        crawler.max_pages = 1
+        pages = list(crawler.iter_crawl())
+        self.assertEqual(len(pages), 1)
+        self.assertIsInstance(pages[0], CrawledPage)
 
 # ---------------------------------------------------------------------------
 # CrawledPage dataclass

@@ -27,6 +27,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from indexer import (
     Indexer,
+    IndexStats,
     PostingEntry,
     _damerau_levenshtein,
     tokenise,
@@ -137,6 +138,18 @@ class TestIndexerAddPage(unittest.TestCase):
         ix.compute_tf_idf()
         postings = ix.get_postings("text")
         self.assertEqual(postings[0].title, "My Title")
+    
+    def test_index_stats_dataclass_fields(self):
+        stats = IndexStats(num_documents=5, num_terms=100,
+                        total_tokens=500, build_duration_seconds=1.5)
+        self.assertEqual(stats.build_duration_seconds, 1.5)
+
+    def test_load_invalid_json_raises(self):
+        with tempfile.NamedTemporaryFile(suffix=".json", mode="w", delete=False) as f:
+            f.write("not valid json{{{")
+            name = f.name
+        with self.assertRaises(Exception):
+            Indexer.load(name)    
 
 
 # ---------------------------------------------------------------------------
