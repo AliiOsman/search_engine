@@ -207,7 +207,7 @@ class Crawler:
         self._robot_parser = urllib.robotparser.RobotFileParser(robots_url)
         try:
             self._politeness_sleep()
-            self._robot_parser.fetch()
+            self._robot_parser.run()
             logger.debug("robots.txt loaded from %s", robots_url)
         except Exception as exc:  # noqa: BLE001
             logger.warning("Could not load robots.txt (%s) – proceeding without.", exc)
