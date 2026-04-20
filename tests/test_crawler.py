@@ -242,11 +242,11 @@ class TestCrawlerRobots(unittest.TestCase):
     
     def test_load_robots_txt_failure_is_handled_gracefully(self):
         """If robots.txt fetch raises, crawling should still proceed."""
+        from unittest.mock import patch
         crawler = Crawler("https://quotes.toscrape.com/", politeness_delay=0)
         crawler._politeness_sleep = MagicMock()
-        crawler._session = MagicMock()
-        crawler._session.get.side_effect = Exception("timeout")
-        crawler._load_robots_txt()          # should not raise
+        with patch("urllib.robotparser.RobotFileParser.read", side_effect=Exception("timeout")):
+            crawler._load_robots_txt()
         self.assertIsNone(crawler._robot_parser)
 
 class TestCrawlerBFS(unittest.TestCase):
