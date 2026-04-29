@@ -268,3 +268,5 @@ All tests use mocks — **no live network requests are made during testing.**
 ├── run_tests.sh
 └── README.md
 ```
+# AI Declaration 
+Gen AI was used throughout the development of this project with help in implementation, testing and video (claude) and with commit messages (copilot)
