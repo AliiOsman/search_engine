@@ -189,7 +189,7 @@ class SearchEngine:
             lines.append("  No pages found.")
             if response.suggestions:
                 lines.append(
-                    "\n  Did you mean: " + ", ".join(
+                    "\n  Close! Spelling's hard sometimes... \n\n  perhaps you meant: " + ", ".join(
                         f"'{s}'" for s in response.suggestions
                     ) + "?"
                 )

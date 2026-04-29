@@ -211,7 +211,7 @@ class TestFormatResponse(unittest.TestCase):
         engine = SearchEngine(ix)
         response = engine.search("luve")
         output = SearchEngine.format_response(response)
-        self.assertIn("Did you mean", output)
+        self.assertIn("  Close! Spelling's hard sometimes... \n\n  perhaps you meant: ", output)
 
     def test_max_display_truncates(self) -> None:
         ix = Indexer()
